@@ -6,6 +6,7 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
+  CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GoogleIntegrationStatus } from '@/lib/api/queries/googleCalendar';
@@ -25,17 +26,24 @@ export function GoogleIntegrationCard({
 }: GoogleIntegrationCardProps): React.ReactElement {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle>Google Calendar</CardTitle>
         <CardDescription>Sync your tasks with Google Calendar</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="pt-0">
+        <p className="text-sm text-muted-foreground">
+          {status.connected
+            ? 'Your account is connected and events can be synced.'
+            : 'Connect your Google account to enable calendar sync.'}
+        </p>
+      </CardContent>
+      <CardFooter className="justify-end">
         {status.connected ? (
           <Button onClick={onDisconnect}>Disconnect</Button>
         ) : (
           <Button onClick={onConnect}>Connect Google</Button>
         )}
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 }

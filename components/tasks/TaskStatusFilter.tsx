@@ -15,13 +15,11 @@ const statuses: Array<{ label: string; value?: TaskStatus }> = [
 
 export function TaskStatusFilter({ value, onChange }: Props) {
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center gap-2">
       {statuses.map((s) => (
         <Button
           key={s.label}
-          className={
-            value === s.value ? undefined : 'bg-white text-black border'
-          }
+          disabled={value === s.value}
           onClick={() => onChange(s.value)}
         >
           {s.label}

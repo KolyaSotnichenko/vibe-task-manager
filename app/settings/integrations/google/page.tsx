@@ -18,17 +18,26 @@ export default function GoogleIntegrationPage(): React.ReactElement {
   const updateSyncMutation = useUpdateGoogleSyncSettings();
 
   if (statusQuery.isLoading) {
-    return <div className="p-8">Loading...</div>;
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="h-24 rounded-md bg-muted" />
+        <div className="h-32 rounded-md bg-muted" />
+      </div>
+    );
   }
 
   if (statusQuery.isError || !statusQuery.data) {
-    return <div className="p-8">Failed to load integration status</div>;
+    return (
+      <div className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm">
+        Failed to load integration status
+      </div>
+    );
   }
 
   const status = statusQuery.data;
 
   return (
-    <div className="container mx-auto max-w-2xl py-8 flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <GoogleIntegrationCard
         status={status}
         onConnect={() => connectMutation.mutate()}
