@@ -18,13 +18,20 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["@/*"],
       "@/app/*": ["app/*"],
       "@/components/*": ["components/*"],
+      "@/hooks/*": ["hooks/*"],
       "@/lib/*": ["lib/*"],
       "@/store/*": ["store/*"],
       "@/styles/*": ["styles/*"]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
