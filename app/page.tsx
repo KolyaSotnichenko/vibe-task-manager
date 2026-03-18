@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
+import { TasksList } from '@/components/tasks/TasksList';
 
 export default function HomePage() {
   return (
-    <main className="p-6">
-      <h1 className="text-xl font-semibold mb-4">Vibe Task Manager</h1>
-      <Button>Get Started</Button>
+    <main className="container mx-auto p-6 space-y-6">
+      <h1 className="text-2xl font-bold">Vibe Task Manager</h1>
+      <TasksList />
     </main>
   );
 }
