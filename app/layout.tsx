@@ -8,8 +8,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Providers>{children}</Providers>
+      <body className="min-h-screen bg-background text-foreground">
+        <Providers>
+          <div className="mx-auto max-w-5xl px-4 py-6">{children}</div>
+        </Providers>
       </body>
     </html>
   );

@@ -3,6 +3,13 @@
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export type GoogleSyncSettingsFormProps = {
   enabled: boolean;
@@ -18,21 +25,29 @@ export function GoogleSyncSettingsForm({
   const [syncEnabled, setSyncEnabled] = useState<boolean>(enabled);
 
   return (
-    <form
-      className="flex items-center justify-between gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(syncEnabled);
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <Switch
-          checked={syncEnabled}
-          onCheckedChange={(v) => setSyncEnabled(v)}
-        />
-        <span>Enable task sync</span>
-      </div>
-      <Button type="submit">Save</Button>
-    </form>
+    <Card>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(syncEnabled);
+        }}
+      >
+        <CardHeader className="pb-3">
+          <CardTitle>Sync settings</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Switch
+              checked={syncEnabled}
+              onCheckedChange={(v) => setSyncEnabled(v)}
+            />
+            <span className="text-sm">Enable task sync</span>
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end">
+          <Button type="submit">Save changes</Button>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }

@@ -61,35 +61,43 @@ export function TaskForm({ mode, initialValues, onSuccess }: Props) {
   };
 
   return (
-    <div className="border rounded p-4 flex flex-col gap-3">
-      <div>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium">Title</label>
         <Input
-          placeholder="Title"
+          placeholder="Task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={isLoading}
           aria-invalid={Boolean(errors.title)}
         />
         {errors.title && (
-          <div className="text-sm text-red-500">{errors.title}</div>
+          <span className="text-xs text-destructive">{errors.title}</span>
         )}
       </div>
-      <div>
+
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium">Description</label>
         <Textarea
-          placeholder="Description"
+          placeholder="Optional description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={isLoading}
+          rows={3}
         />
       </div>
-      {formError && <div className="text-sm text-red-500">{formError}</div>}
-      <Button onClick={handleSubmit} disabled={isLoading}>
-        {isLoading
-          ? 'Saving...'
-          : mode === 'create'
-            ? 'Create task'
-            : 'Update task'}
-      </Button>
+
+      {formError && <div className="text-sm text-destructive">{formError}</div>}
+
+      <div className="flex justify-end">
+        <Button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading
+            ? 'Saving…'
+            : mode === 'create'
+              ? 'Create task'
+              : 'Update task'}
+        </Button>
+      </div>
     </div>
   );
 }
