@@ -13,6 +13,31 @@ export function createApiClient(config: ApiClientConfig) {
         }
         return (await res.json()) as unknown;
       },
+      tasksControllerCreate: async (params: { requestBody: unknown }) => {
+        const res = await fetch(`${config.baseUrl}/tasks`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params.requestBody),
+        });
+        if (!res.ok) {
+          throw new Error('Failed to create task');
+        }
+        return (await res.json()) as unknown;
+      },
+      tasksControllerUpdate: async (params: {
+        id: string;
+        requestBody: unknown;
+      }) => {
+        const res = await fetch(`${config.baseUrl}/tasks/${params.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params.requestBody),
+        });
+        if (!res.ok) {
+          throw new Error('Failed to update task');
+        }
+        return (await res.json()) as unknown;
+      },
     },
   };
 }
