@@ -14,11 +14,11 @@ export default function HomePage() {
   const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<string>('');
 
-  const loadTime = async (): Promise<void> => {
+  const loadTime = async (tz: string): Promise<void> => {
     setStatus('loading');
     setError('');
     try {
-      const result = await getTime(timezone ? { timezone } : undefined);
+      const result = await getTime(tz ? { timezone: tz } : undefined);
       setData(result);
       setStatus('success');
     } catch (e: unknown) {
@@ -28,8 +28,8 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    loadTime();
-  }, [loadTime]);
+    void loadTime(timezone);
+  }, [timezone]);
 
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -43,7 +43,10 @@ export default function HomePage() {
             value={timezone}
             onChange={(e) => setTimezone(e.target.value)}
           />
-          <Button onClick={loadTime} disabled={status === 'loading'}>
+          <Button
+            onClick={() => void loadTime(timezone)}
+            disabled={status === 'loading'}
+          >
             Fetch time
           </Button>
 
