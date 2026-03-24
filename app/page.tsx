@@ -1,31 +1,57 @@
 'use client';
 
-import { TasksList } from '@/components/tasks/TasksList';
-import { TaskForm } from '@/components/tasks/TaskForm';
+import { useEffect, useState } from 'react';
+import { getTime } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+
+type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export default function HomePage() {
-  const [showForm, setShowForm] = useState<boolean>(false);
+  const [timezone, setTimezone] = useState<string>('');
+  const [status, setStatus] = useState<Status>('idle');
+  const [data, setData] = useState<unknown>(null);
+  const [error, setError] = useState<string>('');
+
+  const loadTime = async (): Promise<void> => {
+    setStatus('loading');
+    setError('');
+    try {
+      const result = await getTime(timezone ? { timezone } : undefined);
+      setData(result);
+      setStatus('success');
+    } catch (e: unknown) {
+      setStatus('error');
+      setError(e instanceof Error ? e.message : 'Unknown error');
+    }
+  };
+
+  useEffect(() => {
+    loadTime();
+  }, [loadTime]);
 
   return (
-    <main className="flex flex-col gap-6">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Vibe Task Manager</CardTitle>
-          <Button onClick={() => setShowForm((v) => !v)}>
-            {showForm ? 'Close' : 'New task'}
-          </Button>
+    <main className="flex min-h-screen items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Current Time</CardTitle>
         </CardHeader>
-        {showForm && (
-          <CardContent>
-            <TaskForm mode="create" onSuccess={() => setShowForm(false)} />
-          </CardContent>
-        )}
-      </Card>
+        <CardContent className="flex flex-col gap-4">
+          <Input
+            placeholder="Timezone (optional)"
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+          />
+          <Button onClick={loadTime} disabled={status === 'loading'}>
+            Fetch time
+          </Button>
 
-      <TasksList />
+          {status === 'loading' && <p>Loading...</p>}
+          {status === 'error' && <p className="text-red-600">{error}</p>}
+          {status === 'success' && <pre>{JSON.stringify(data, null, 2)}</pre>}
+        </CardContent>
+      </Card>
     </main>
   );
 }
