@@ -5,6 +5,7 @@ import { getTime } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getCityBackground } from '@/lib/cityBackground';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -32,8 +33,15 @@ export default function HomePage() {
   }, [timezone]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-md">
+    <main
+      className="relative flex min-h-screen items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage: getCityBackground(timezone)
+          ? `url('${getCityBackground(timezone)}')`
+          : undefined,
+      }}
+    >
+      <Card className="w-full max-w-md backdrop-blur-sm bg-background/80">
         <CardHeader>
           <CardTitle>Current Time</CardTitle>
         </CardHeader>
