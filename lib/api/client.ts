@@ -1,45 +1,41 @@
-export type ApiClientConfig = {
-  baseUrl: string;
-};
+import type { operations } from './generated/types';
 
-export function createApiClient(config: ApiClientConfig) {
-  return {
-    tasks: {
-      tasksControllerFindAll: async (params: { status?: string }) => {
-        const query = params.status ? `?status=${params.status}` : '';
-        const res = await fetch(`${config.baseUrl}/tasks${query}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch tasks');
-        }
-        return (await res.json()) as unknown;
-      },
-      tasksControllerCreate: async (params: { requestBody: unknown }) => {
-        const res = await fetch(`${config.baseUrl}/tasks`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(params.requestBody),
-        });
-        if (!res.ok) {
-          throw new Error('Failed to create task');
-        }
-        return (await res.json()) as unknown;
-      },
-      tasksControllerUpdate: async (params: {
-        id: string;
-        requestBody: unknown;
-      }) => {
-        const res = await fetch(`${config.baseUrl}/tasks/${params.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(params.requestBody),
-        });
-        if (!res.ok) {
-          throw new Error('Failed to update task');
-        }
-        return (await res.json()) as unknown;
-      },
-    },
-  };
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
 }
 
-export const apiClient = createApiClient({ baseUrl: '' });
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+
+async function request<T>(input: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${input}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...init?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, response.statusText);
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
+}
+
+export async function getTime(
+  params?: operations['TimeController_getTime']['parameters']['query'],
+): Promise<unknown> {
+  const query = params?.timezone
+    ? `?timezone=${encodeURIComponent(params.timezone)}`
+    : '';
+  return request<unknown>(`/time${query}`);
+}
